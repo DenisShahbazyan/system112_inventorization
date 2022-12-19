@@ -1,0 +1,61 @@
+#:import ZBarCam kivy_garden.zbarcam.ZBarCam
+#:import ZBarSymbol pyzbar.pyzbar.ZBarSymbol
+
+<LoginPasswordInput@TextInput>:
+    font_size: '20sp'
+    halign: 'left'
+    padding_y:
+        [self.height / 2.0 - (self.line_height / 2.0) *
+        len(self._lines), 0]
+    multiline: False
+    write_tab: False
+
+<LoginScreen>:
+    input_login: input_login
+    input_password: input_password
+    label_error: label_error
+
+    AnchorLayout:
+        canvas:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            spacing: 10
+
+            orientation: 'vertical'
+            size_hint: (0.75, 0.4)
+            Label:
+                font_size: '20sp'
+                text: 'Добро пожаловать!'
+                color: (0, 0, 0, 1)
+            LoginPasswordInput:
+                id: input_login
+                hint_text: 'Логин'
+            LoginPasswordInput:
+                id: input_password
+                hint_text: 'Пароль'
+            Button:
+                text: 'Войти'
+                on_press: root.sign_in()
+            Label:
+                id: label_error
+                font_size: '20sp'
+                text: ''
+                color: (1, 0, 0, 1)
+
+
+<MenuScreen>:
+
+    BoxLayout:
+        orientation: 'vertical'
+        ZBarCam:
+            id: zbarcam
+            # optional, by default checks all types
+            code_types: ZBarSymbol.QRCODE, ZBarSymbol.EAN13
+        Label:
+            size_hint: None, None
+            size: self.texture_size[0], 50
+            text: ', '.join([str(symbol.data) for symbol in zbarcam.symbols])
