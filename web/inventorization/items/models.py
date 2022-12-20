@@ -66,6 +66,10 @@ class Items(models.Model):
         verbose_name='за кем числиться',
         max_length=150,
     )
+    image = models.ImageField(
+        verbose_name='картинка',
+        upload_to='items/images/'
+    )
     remark = models.CharField(
         verbose_name='примечание',
         max_length=250,
