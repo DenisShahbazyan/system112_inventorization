@@ -1,24 +1,31 @@
-from kivymd.app import MDApp
 from kivy.core.window import Window
 from kivy.lang.builder import Builder
+from kivy.properties import ObjectProperty, StringProperty
+from kivy_garden.zbarcam import ZBarCam
+from kivymd.app import MDApp
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import MDScreenManager
-from kivy.properties import ObjectProperty
-
 from kivymd.uix.tab.tab import MDTabsBase
-from kivymd.uix.floatlayout import MDFloatLayout
-
-from kivy_garden.zbarcam import ZBarCam
+from kivymd.uix.textfield import MDTextField
 
 
 class Tab(MDFloatLayout, MDTabsBase):
     pass
 
 
+class ClickableTextFieldRound(MDRelativeLayout):
+    text = StringProperty()
+    hint_text = StringProperty()
+
+
 class LoginScreen(MDScreen):
-    input_login = ObjectProperty(None)
-    input_password = ObjectProperty(None)
-    label_error = ObjectProperty(None)
+    input_login: MDTextField = ObjectProperty()
+    input_password: MDTextField = ObjectProperty()
+    label_error: MDLabel = ObjectProperty()
+    input_password_field: ClickableTextFieldRound = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -35,14 +42,14 @@ class LoginScreen(MDScreen):
     def on_touch_down(self, touch):
         if self.input_login.collide_point(*touch.pos):
             self.label_error.text = ''
-        if self.input_password.collide_point(*touch.pos):
+        if self.input_password_field.collide_point(*touch.pos):
             self.label_error.text = ''
         return super().on_touch_down(touch)
 
 
 class MenuScreen(MDScreen):
-    zbarcam: ZBarCam
-    qrfield: ObjectProperty(None)
+    zbarcam: ZBarCam = ObjectProperty()
+    qrfield: MDTextField = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -80,7 +87,7 @@ class InventorizationApp(MDApp):
         return sm
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     Window.size = (375, 750)
     Builder.load_file('../ui/inventorization.kv')
     InventorizationApp().run()
