@@ -2,3 +2,4 @@ autopep8==2.0.1
 Kivy==2.1.0
 Kivy-examples==2.1.0
 zbarcam==2020.524
+kivymd==1.1.1

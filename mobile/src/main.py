@@ -1,16 +1,22 @@
-from kivy.app import App
-from kivy.config import Config
+from kivymd.app import MDApp
+from kivy.core.window import Window
 from kivy.lang.builder import Builder
-from kivy.uix.screenmanager import FadeTransition, Screen, ScreenManager
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.screenmanager import MDScreenManager
 from kivy.properties import ObjectProperty
 
-Config.set('graphics', 'width', '360')
-Config.set('graphics', 'height', '760')
+from kivymd.uix.tab.tab import MDTabsBase
+from kivymd.uix.floatlayout import MDFloatLayout
 
+Window.size = (375, 750)
 Builder.load_file('../ui/inventorization.kv')
 
 
-class LoginScreen(Screen):
+class Tab(MDFloatLayout, MDTabsBase):
+    pass
+
+
+class LoginScreen(MDScreen):
     input_login = ObjectProperty(None)
     input_password = ObjectProperty(None)
     label_error = ObjectProperty(None)
@@ -23,7 +29,7 @@ class LoginScreen(Screen):
         PASSWORD = ''
         if (self.input_login.text == LOGIN and
                 self.input_password.text == PASSWORD):
-            self.manager.current = 'second'
+            self.manager.current = 'menu'
         else:
             self.label_error.text = 'Ошибка входа!'
 
@@ -35,16 +41,22 @@ class LoginScreen(Screen):
         return super().on_touch_down(touch)
 
 
-class MenuScreen(Screen):
+class MenuScreen(MDScreen):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
 
-class InventorizationApp(App):
+class InventorizationApp(MDApp):
+    def on_start(self):
+        self.theme_cls.primary_palette = 'BlueGray'
+        self.theme_cls.primary_hue = '500'
+        self.theme_cls.theme_style = 'Light'
+
     def build(self):
-        sm = ScreenManager(transition=FadeTransition())
+        sm = MDScreenManager()
         sm.add_widget(LoginScreen(name='login'))
-        sm.add_widget(MenuScreen(name='second'))
+        sm.add_widget(MenuScreen(name='menu'))
         return sm
 
 
