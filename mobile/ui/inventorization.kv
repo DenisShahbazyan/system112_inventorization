@@ -32,53 +32,68 @@
                 password: True
             MDRectangleFlatButton:
                 text: 'Войти'
+                pos_hint: {"center_x": 0.5, "center_y": 0.3}
                 on_release: root.sign_in()
             MDLabel:
                 id: label_error
                 font_size: '14sp'
                 text: ''
                 color: (1, 0, 0, 1)
+                halign: 'center'
 
 
 <MenuScreen>:
+    zbarcam: zbarcam
+    qrfield: qrfield
 
-    MDTabs:
+    BoxLayout:
+        orientation: 'vertical'
+        MDTabs:
 
-        Tab:
-            title: 'Сканировать'
-            content_text: f"This is an example text for {self.title}"
-            ZBarCam:
-                id: zbarcam
-                code_types: ZBarSymbol.QRCODE, ZBarSymbol.EAN13
-            MDTextField:
-                text: ', '.join([str(symbol.data) for symbol in zbarcam.symbols])
+            Tab:
+                title: 'Сканировать'
+                content_text: f"This is an example text for {self.title}"
+                ZBarCam:
+                    id: zbarcam
+                    code_types: ZBarSymbol.QRCODE, ZBarSymbol.EAN13
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.75}
+                    size_hint: [1, 0.5]
+                MDTextField:
+                    id: qrfield
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    text: ', '.join([str(symbol.data) for symbol in zbarcam.symbols])
+                    on_text: root.scan(self.text)
 
-        Tab:
-            title: 'Добавить'
-            content_text: f"This is an example text for {self.title}"
+            Tab:
+                title: 'Добавить'
+                content_text: f"This is an example text for {self.title}"
 
-        Tab:
-            title: 'Список'
-            content_text: f"This is an example text for {self.title}"
+            Tab:
+                title: 'Список'
+                content_text: f"This is an example text for {self.title}"
 
-    # TabbedPanel:
-    #     do_default_tab: False
+            Tab:
+                title: 'Генерировать'
+                content_text: f"This is an example text for {self.title}"
 
-    #     TabbedPanelItem:
-    #         text: 'Сканировать'
+        # TabbedPanel:
+        #     do_default_tab: False
+
+        #     TabbedPanelItem:
+        #         text: 'Сканировать'
 
 
-    #         # BoxLayout:
-    #         #     orientation: 'vertical'
+        #         # BoxLayout:
+        #         #     orientation: 'vertical'
 
-    #         #     ZBarCam:
-    #         #         id: zbarcam
-    #         #         code_types: ZBarSymbol.QRCODE, ZBarSymbol.EAN13
-    #         #     MyTextInput:
-    #         #         text: ', '.join([str(symbol.data) for symbol in zbarcam.symbols])
+        #         #     ZBarCam:
+        #         #         id: zbarcam
+        #         #         code_types: ZBarSymbol.QRCODE, ZBarSymbol.EAN13
+        #         #     MyTextInput:
+        #         #         text: ', '.join([str(symbol.data) for symbol in zbarcam.symbols])
 
-    #     TabbedPanelItem:
-    #         text: 'Добавить'
+        #     TabbedPanelItem:
+        #         text: 'Добавить'
 
-    #     TabbedPanelItem:
-    #         text: 'Список'
+        #     TabbedPanelItem:
+        #         text: 'Список'
