@@ -119,10 +119,6 @@ class InventorizationApp(MDApp):
         sm.add_widget(MenuScreen(name='menu'))
         return sm
 
-    def get_application_config(self):
-        return super(InventorizationApp, self).get_application_config(
-            '~/.%(appname)s.ini')
-
 
 if __name__ == '__main__':
     Window.size = (375, 750)
