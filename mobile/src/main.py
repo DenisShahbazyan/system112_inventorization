@@ -14,6 +14,7 @@ from kivymd.uix.textfield import MDTextField
 from kivy.network.urlrequest import UrlRequest
 import json
 from http import HTTPStatus
+from kivy.config import Config
 
 
 class Tab(MDFloatLayout, MDTabsBase):
@@ -66,21 +67,10 @@ class LoginScreen(MDScreen):
             on_error=self.got_error,
             on_success=self.got_success,
         )
-        # Проверить соединение до начала ожидания. Если сервак отключен, прога зависает
         req.wait()
 
         if req.resp_status == HTTPStatus.OK and self.token is not None:
             self.manager.current = 'menu'
-        else:
-            self.label_error.text = 'Ошибка входа!'
-
-        # LOGIN = ''
-        # PASSWORD = ''
-        # if (self.input_login.text == LOGIN and
-        #         self.input_password.text == PASSWORD):
-        #     self.manager.current = 'menu'
-        # else:
-        #     self.label_error.text = 'Ошибка входа!'
 
     def on_touch_down(self, touch):
         if self.input_login.collide_point(*touch.pos):
@@ -128,6 +118,10 @@ class InventorizationApp(MDApp):
         sm.add_widget(LoginScreen(name='login'))
         sm.add_widget(MenuScreen(name='menu'))
         return sm
+
+    def get_application_config(self):
+        return super(InventorizationApp, self).get_application_config(
+            '~/.%(appname)s.ini')
 
 
 if __name__ == '__main__':
