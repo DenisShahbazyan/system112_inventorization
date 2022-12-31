@@ -11,6 +11,10 @@ from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.tab.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 
+from kivy.network.urlrequest import UrlRequest
+import json
+from http import HTTPStatus
+
 
 class Tab(MDFloatLayout, MDTabsBase):
     pass
@@ -29,15 +33,54 @@ class LoginScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.token = None
+
+    def got_success(self, req, token):
+        self.token = token['auth_token']
+
+    def got_error(self, req, *args):
+        self.label_error.text = (
+            'Ошибка ' + str(req.resp_status) + ' ' + str(req.error)
+        )
+
+    def got_fail(self, req, *args):
+        self.label_error.text = 'Ошибка ' + str(req.resp_status)
 
     def sign_in(self):
-        LOGIN = ''
-        PASSWORD = ''
-        if (self.input_login.text == LOGIN and
-                self.input_password.text == PASSWORD):
+        URL = 'http://127.0.0.1:8000/api/auth/token/login/'
+        values = {
+            'password': str(self.input_password.text.strip()),
+            'email': str(self.input_login.text.strip()),
+        }
+        params = json.dumps(values)
+        headers = {
+            'Content-type': 'application/json',
+            'Accept': '*/*'
+        }
+
+        req = UrlRequest(
+            URL,
+            req_body=params,
+            req_headers=headers,
+            on_failure=self.got_fail,
+            on_error=self.got_error,
+            on_success=self.got_success,
+        )
+        # Проверить соединение до начала ожидания. Если сервак отключен, прога зависает
+        req.wait()
+
+        if req.resp_status == HTTPStatus.OK and self.token is not None:
             self.manager.current = 'menu'
         else:
             self.label_error.text = 'Ошибка входа!'
+
+        # LOGIN = ''
+        # PASSWORD = ''
+        # if (self.input_login.text == LOGIN and
+        #         self.input_password.text == PASSWORD):
+        #     self.manager.current = 'menu'
+        # else:
+        #     self.label_error.text = 'Ошибка входа!'
 
     def on_touch_down(self, touch):
         if self.input_login.collide_point(*touch.pos):
@@ -89,5 +132,5 @@ class InventorizationApp(MDApp):
 
 if __name__ == '__main__':
     Window.size = (375, 750)
-    Builder.load_file('../ui/inventorization.kv')
+    Builder.load_file('../ui/main.kv')
     InventorizationApp().run()
